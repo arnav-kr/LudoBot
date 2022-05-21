@@ -161,14 +161,16 @@ export const command = {
           components[0].components[1].setLabel(cp.toUpperCase() + ": " + num.toString());
           snapshot = await game.getSnapshot();
 
-          interaction.update({ content: `<@${game.players[game.currentPlayer].id}>(\\${clrEmojis[game.currentPlayer]})'s Turn!`, files: [snapshot], components });
+          await interaction.update({ content: `<@${game.players[game.currentPlayer].id}>(\\${clrEmojis[game.currentPlayer]})'s Turn!`, files: [snapshot], components });
           break;
         case "leave":
           let leave = await confirm({
+            interaction: interaction,
             channel: interaction.channel,
             to: [interaction.user.id],
             content: `<@${interaction.user.id}> Are you sure you want to leave?`,
-          })[interaction.user.id];
+          })
+          leave = leave[interaction.user.id];
           if (leave) {
             Object.values(game.players).filter(u => u.id == interaction.user.id)[0].leave()
             interaction.channel.send(`<@${interaction.user.id}> shamelessly left the game!`)

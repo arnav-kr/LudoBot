@@ -1,6 +1,7 @@
 import { MessageActionRow, MessageButton, MessageSelectMenu } from "discord.js";
 
 export const confirm = async ({
+  interaction = undefined,
   channel,
   to,
   content,
@@ -23,7 +24,9 @@ export const confirm = async ({
           .setLabel(no || "No")
           .setStyle("DANGER"),
       );
-    let sent = await channel.send({ content, embeds, components: [options], ephemeral: ephemeral });
+    let sent;
+    if (interaction) sent = await interaction.reply({ content, embeds, components: [options], ephemeral: ephemeral });
+    else sent = await channel.send({ content, embeds, components: [options], ephemeral: ephemeral });
     const filter = (i) => to.includes(i.user.id) && i.isButton();
     const collector = sent.createMessageComponentCollector({ filter, time: timeout });
 

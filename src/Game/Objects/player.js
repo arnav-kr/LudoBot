@@ -51,6 +51,6 @@ export class Player {
       choices: choiceObj,
       to: this.id,
       channel: this.game.channel,
-    });
+    })[this.id.toString()];
   }
 }
