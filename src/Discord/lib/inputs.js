@@ -25,7 +25,7 @@ export const confirm = async ({
       );
     let sent = await channel.send({ content, embeds, components: [options], ephemeral: ephemeral });
     const filter = (i) => to.includes(i.user.id) && i.isButton();
-    const collector = sent.createMessageComponentCollector({ filter, timeout });
+    const collector = sent.createMessageComponentCollector({ filter, time: timeout });
 
     collector.on('collect', async function (interaction) {
       switch (interaction.customId) {
@@ -87,7 +87,7 @@ export const prompt = async ({
     else sent = await channel.send({ content: content, embeds, components: [options], ephemeral: ephemeral });
 
     const filter = (i) => to.includes(i.user.id) && i.isSelectMenu();
-    const collector = sent.createMessageComponentCollector({ filter, timeout });
+    const collector = sent.createMessageComponentCollector({ filter, time: timeout });
 
     collector.on('collect', async function (interaction) {
       switch (interaction.customId) {

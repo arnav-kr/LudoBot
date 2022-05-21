@@ -39,7 +39,9 @@ export const command = {
     if (Array.from(new Set(players.map(p => p.id))).length !== players.length) return interaction.reply({ content: "You can't invite a User multiple times!", ephemeral: true });
     if (players.some(u => u.id == interaction.client.user.id)) players = players.filter(u => u.id != interaction.client.user.id);
 
-    await interaction.reply({ content: `Getting Things Ready For You...`, fetchReply: true, ephemeral: true });
+    try {
+      await interaction.reply({ content: `Getting Things Ready For You...`, fetchReply: true, ephemeral: true });
+    } catch (e) { }
     let UserActions = [];
     if (players.length > 0) {
       UserActions = await confirm({
@@ -145,7 +147,7 @@ export const command = {
     game.interaction = interaction;
 
     const filter = (i) => players.map(p => p.id).includes(i.user.id) && i.isButton();
-    const collector = gameMsg.createMessageComponentCollector({ filter, timeout: 90 * 60 * 1000 });
+    const collector = gameMsg.createMessageComponentCollector({ filter, time: 90 * 60 * 1000 });
 
     collector.on('collect', async function (interaction) {
       switch (interaction.customId) {
