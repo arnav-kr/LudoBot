@@ -144,7 +144,7 @@ export class Game {
     });
 
     Object.values(this.players).forEach(p => {
-      Object.values(p.tokens).forEach(t => t.draw());
+      Object.values(p.tokens).forEach(t => { t.draw(); t.nameObj.draw(); });
     });
 
     let winPos = Object.entries(winCoords);
