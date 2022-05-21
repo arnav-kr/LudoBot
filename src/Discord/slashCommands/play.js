@@ -60,7 +60,7 @@ export const command = {
     console.log(players)
 
     if (players.length == 1) return interaction.channel.send({ content: "You can't Play Alone!", ephemeral: true });
-    if (players.length == 2) return interaction.channel.send({ content: "Only 2 or 4 players can play at a time (including you)", ephemeral: true });
+    if (players.length == 3) return interaction.channel.send({ content: "Only 2 or 4 players can play at a time (including you)", ephemeral: true });
 
     let playerData = [];
     players.forEach(player => {
