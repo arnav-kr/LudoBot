@@ -39,8 +39,8 @@ export const command = {
     if (Array.from(new Set(players.map(p => p.id))).length !== players.length) return interaction.reply({ content: "You can't invite a User multiple times!", ephemeral: true });
 
     let members = players.map(async (p) => await (guild.members.cache.get(p.id) || guild.members.cache.get(p.id)));
-    members[this.interaction.id] = interaction.member;
-    
+    members[interaction.id] = interaction.member;
+
     if (members.some(m => m.isEngazed == true)) {
       let memberArr = members.map(m => `<@${m.id}>`);
       interaction.reply(`${memberArr.length > 1 ? memberArr.join(", ") + "are " : memberArr.join(", ") + "is "} busy in their own works. Please Invite someone else.`)
