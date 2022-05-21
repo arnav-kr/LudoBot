@@ -157,8 +157,8 @@ export const command = {
             let cp = game.currentPlayer;
             if (interaction.user.id != game.players[cp].id) return interaction.reply({ content: "Its Not Your Turn!", ephemeral: true });
             await game.play(interaction);
-            await gameMsg.delete();
             await gameLoop(cp.toUpperCase() + ": " + game.players[cp].currentNumber)
+            await gameMsg.delete();
             break;
           case "leave":
             let leave = await confirm({
