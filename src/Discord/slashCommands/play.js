@@ -38,10 +38,21 @@ export const command = {
     if (players.some(u => u.bot)) return interaction.reply({ content: "You can't invite Discord Bots for a game!", ephemeral: true });
     if (Array.from(new Set(players.map(p => p.id))).length !== players.length) return interaction.reply({ content: "You can't invite a User multiple times!", ephemeral: true });
 
+    let members = players.map(async (p) => await (guild.members.cache.get(p.id) || guild.members.cache.get(p.id)));
+    members[this.interaction.id] = interaction.member;
+    
+    if (members.some(m => m.isEngazed == true)) {
+      let memberArr = members.map(m => `<@${m.id}>`);
+      interaction.reply(`${memberArr.length > 1 ? memberArr.join(", ") + "are " : memberArr.join(", ") + "is "} busy in their own works. Please Invite someone else.`)
+    }
+
+
     try {
       await interaction.reply({ content: `Getting Things Ready For You...`, fetchReply: true, ephemeral: true });
     } catch (e) { }
+
     let UserActions = [];
+    members.forEach(m => m.isEngazed = true);
     if (players.length > 0) {
       UserActions = await confirm({
         channel: interaction.channel,
@@ -51,8 +62,10 @@ export const command = {
     }
 
     players.unshift(interaction.user);
+
     Object.entries(UserActions).forEach(([id, play]) => {
       if (!play) {
+        members.filter(m => m.id = id)[0].isEngazed = false;
         players = players.filter(p => p.id != id);
       }
     });
@@ -175,11 +188,13 @@ export const command = {
             leave = leave[interaction.user.id];
             if (leave) {
               Object.values(game.players).filter(u => u.id == interaction.user.id)[0].leave()
-              interaction.channel.send(`<@${interaction.user.id}> shamelessly left the game!`)
+              await interaction.channel.send(`<@${interaction.user.id}> shamelessly left the game!`);
+              members.filter(m => m.id == interaction.user.id)[0].isEngazed = false;
             }
             if (Object.keys(game.players).length - game.leftUsers.length <= 1) {
               collector.stop();
               await gameMsg.delete();
+              members.forEach(member => member.isEngazed = false);
               return interaction.channel.send(`Everyone Left! So, Ending the Game.`);
             }
             break;

@@ -74,11 +74,11 @@ export const prompt = async ({
   embeds = [],
   placeholder,
   choices,
-  timeout = 30000,
+  timeout = 20000,
   ephemeral = false,
 }) => {
   return new Promise(async (resolve, reject) => {
-
+    if (!defaultValue) defaultValue = choices[0].value;
     let selction = new MessageSelectMenu()
       .setCustomId('selection')
       .setPlaceholder(placeholder || 'Make a Selection')
@@ -99,7 +99,6 @@ export const prompt = async ({
           if (!interaction.isSelectMenu()) break;
           resolve(interaction.values[0])
           collector.stop();
-          // await interaction.update({ components: [] });
           await sent.delete();
           break;
       }
