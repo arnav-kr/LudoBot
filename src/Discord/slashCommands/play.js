@@ -156,9 +156,9 @@ export const command = {
           let num;
           let cp = game.currentPlayer;
           if (interaction.user.id != game.players[cp].id) return interaction.reply({ content: "Its Not Your Turn!", ephemeral: true });
-          num = await game.play(interaction);
+          await game.play(interaction);
           let components = interaction.message.components;
-          components[0].components[1].setLabel(cp.toUpperCase() + ": " + num.toString());
+          components[0].components[1].setLabel(cp.toUpperCase() + ": " + num.toString(game.players[cp].currentNumber));
           snapshot = await game.getSnapshot();
 
           await interaction.update({ content: `<@${game.players[game.currentPlayer].id}>(\\${clrEmojis[game.currentPlayer]})'s Turn!`, files: [snapshot], components });
