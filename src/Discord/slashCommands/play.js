@@ -177,7 +177,7 @@ export const command = {
               Object.values(game.players).filter(u => u.id == interaction.user.id)[0].leave()
               interaction.channel.send(`<@${interaction.user.id}> shamelessly left the game!`)
             }
-            if (game.players.length - game.leftUsers.length <= 1) {
+            if (Object.keys(game.players).length - game.leftUsers.length <= 1) {
               collector.stop();
               await gameMsg.delete();
               return interaction.channel.send(`Everyone Left! So, Ending the Game.`);
