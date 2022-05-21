@@ -57,9 +57,10 @@ export const command = {
         players = players.filter(p => p.id != id);
       }
     });
+    console.log(players)
 
-    if (players.length == 0) return interaction.reply({ content: "You can't Play Alone!", ephemeral: true });
-    if (players.length == 2) return interaction.reply({ content: "Only 2 or 4 players can play at a time (including you)", ephemeral: true });
+    if (players.length == 0) return interaction.channel.send({ content: "You can't Play Alone!", ephemeral: true });
+    if (players.length == 2) return interaction.channel.send({ content: "Only 2 or 4 players can play at a time (including you)", ephemeral: true });
 
     let playerData = [];
     players.forEach(player => {
