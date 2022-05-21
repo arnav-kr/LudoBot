@@ -2,7 +2,7 @@ import { homes, paths, starts, stops } from "../lib/consts.js";
 
 export class Token {
   constructor(imgData, x, y, metadata) {
-    let splited = new URL(imgData.src).pathname.split(/[\/|\\]/gm).at(-1).split(".");
+    let splited = new URL(imgData.src.startsWith("file://") ? imgData.src : "file://" + imgData.src).pathname.split(/[\/|\\]/gm).at(-1).split(".");
     this.color = splited[0];
     this.tag = splited[1];
     this.game = metadata.game;
