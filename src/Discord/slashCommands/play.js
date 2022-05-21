@@ -10,7 +10,7 @@ export const command = {
       name: 'player2',
       description: '2nd Player',
       type: 'USER',
-      required: false,
+      required: true,
     },
     {
       name: 'player3',
@@ -32,9 +32,10 @@ export const command = {
     let player4 = interaction.options.getUser('player4') ?? null;
 
     let players = [player2, player3, player4].filter(i => i != null);
+    if (players.length == 0) return interaction.reply({ content: "You can't Play Alone!", ephemeral: true });
+    if (players.length == 2) return interaction.reply({ content: "Only 2 or 4 players can play at a time (including you)", ephemeral: true });
     if (players.some(i => i.id == interaction.user.id)) return interaction.reply({ content: "You can't invite yourself!", ephemeral: true });
     if (players.some(u => (u.bot && u.id != interaction.client.user.id))) return interaction.reply({ content: "You can't invite Discord Bots for a game!", ephemeral: true });
-
     if (players.some(u => u.id == interaction.client.user.id)) players = players.filter(u => u.id != interaction.client.user.id);
 
     await interaction.reply({ content: `Getting Things Ready For You...`, fetchReply: true, ephemeral: true });
@@ -94,6 +95,14 @@ export const command = {
     let canvas = new Canvas(1200, 1200);
     let ctx = canvas.getContext("2d");
     await interaction.channel.send(`You are ${color}!`);
+
+    let clrEmojis = {
+      red: "🔴",
+      blue: "🔵",
+      green: "🟢",
+      yellow: "🟡",
+    }
+
     let game = new Game(ctx, {
       prompt: prompt,
       canvas: canvas,
@@ -125,7 +134,7 @@ export const command = {
 
     let snapshot = await game.getSnapshot();
     let gameMsg = await interaction.channel.send({
-      content: `<@${Object.values(game.players).filter(p => p.color == game.currentPlayer)[0].id}>'s Turn!`,
+      content: `<@${Object.values(game.players).filter(p => p.color == game.currentPlayer)[0].id}>(\\${clrEmojis[game.currentPlayer]})'s Turn!`,
       files: [snapshot],
       components: [buttons],
     });
@@ -141,20 +150,21 @@ export const command = {
           let num;
           let cp = game.currentPlayer;
           if (interaction.user.id != game.players[cp].id) return interaction.reply({ content: "Its Not Your Turn!", ephemeral: true });
-          num = await game.play();
+          num = await game.play(interaction);
           let components = interaction.message.components;
           components[0].components[1].setLabel(cp.toUpperCase() + ": " + num.toString());
           snapshot = await game.getSnapshot();
-          interaction.update({ files: [snapshot], components });
+
+          interaction.update({ content: `<@${game.players[game.currentPlayer].id}>(\\${clrEmojis[game.currentPlayer]})'s Turn!`, files: [snapshot], components });
           break;
         case "leave":
           let leave = await confirm({
             channel: interaction.channel,
             to: [interaction.user.id],
             content: `<@${interaction.user.id}> Are you sure you want to leave?`,
-          });
+          })[interaction.user.id];
           if (leave) {
-            game.players = game.players.filter(p => p.id != interaction.user.id);
+            Object.values(game.players).filter(u => u.id == interaction.user.id)[0].leave()
             interaction.channel.send(`<@${interaction.user.id}> shamelessly left the game!`)
           }
           break;

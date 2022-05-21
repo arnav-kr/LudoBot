@@ -62,6 +62,7 @@ export const confirm = async ({
 };
 
 export const prompt = async ({
+  interaction = undefined,
   channel,
   defaultValue,
   to,
@@ -81,7 +82,9 @@ export const prompt = async ({
 
     const options = new MessageActionRow()
       .addComponents(selction);
-    let sent = await channel.send({ content: content, embeds, components: [options], ephemeral: ephemeral });
+    let sent;
+    if (interaction) sent = await interaction.reply({ content: content, embeds, components: [options], ephemeral: ephemeral });
+    else sent = await channel.send({ content: content, embeds, components: [options], ephemeral: ephemeral });
 
     const filter = (i) => to.includes(i.user.id) && i.isSelectMenu();
     const collector = sent.createMessageComponentCollector({ filter, timeout });

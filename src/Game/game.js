@@ -30,13 +30,7 @@ export class Game {
     this.events = {
       playerChange: () => { },
     }
-    if (players.length % 2 !== 0) {
-      players.push({
-        id: "973641411020865587",
-        name: "Ludo Bot",
-        isBot: true
-      })
-    }
+    if (players.length == 1) throw new RangeError("You Can't Play Alone!")
     if (players.length == 2) {
       let clrPairs = [
         ["red", "yellow"],
@@ -51,10 +45,11 @@ export class Game {
       clrs = clrs.filter(c => c != color);
       clrs.forEach((c, i) => { this.playerData[i + 1].color = c; })
     }
+    else throw new RangeError("Only 2 or 4 users can play at a time!")
     this.currentPlayer = this.playerData[this.currentPlayerIndex].color;
     this.setup();
   }
-  async play() {
+  async play(interaction = undefined) {
     let player = this.players[this.currentPlayer];
     let magnitude = player.roll();
     let choices = [];
@@ -83,7 +78,7 @@ export class Game {
         player.tokens[choices[0].tag].walk(magnitude);
       }
       else {
-        const choice = await player.prompt(choices.map(t => t.tag));
+        const choice = await player.prompt(choices.map(t => t.tag), interaction);
         if (choice && ["a", "b", "c", "d"].includes(choice)) {
           choices.filter(t => t.tag == choice)[0].walk(magnitude);
         }
@@ -118,24 +113,17 @@ export class Game {
       })
     });
     this.playerData.forEach(player => {
-      if (player.isBot) {
-        this.players[player.color] = new Bot(this.ctx, player.color, {
-          id: player.id,
-          game: this
-        });
-      }
-      else {
-        this.players[player.color] = new Player(this.ctx, player.color, {
-          id: player.id,
-          game: this
-        });
-      }
-      new PlayerName({
+      this.players[player.color] = new Player(this.ctx, player.color, {
+        id: player.id,
+        game: this,
+      });
+      this.players[player.color].nameObj = new PlayerName({
         color: player.color,
         name: player.name,
         game: this,
         ctx: this.ctx,
-      }).draw();
+      })
+      this.players[player.color].nameObj.draw();
     });
     this.events.playerChange(this.currentPlayer);
   }

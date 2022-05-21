@@ -29,9 +29,9 @@ export class Player {
   leave() {
     this.left = true;
     this.game.playerData.filter(p => p.id != this.id);
-    this.name = this.name.length > 11 ? this.name.substr(0, 11) + "...(left)" : this.name + "(left)";
+    this.nameObj.name = this.nameObj.name.length > 11 ? this.nameObj.name.substr(0, 11) + "...(left)" : this.nameObj.name + "(left)";
   }
-  async prompt(choices) {
+  async prompt(choices, interaction) {
     let choiceObj = choices.map((c) => {
       let vals = {
         red: "🔴",
@@ -45,6 +45,7 @@ export class Player {
       };
     });
     return await this.game.prompt({
+      interaction: interaction,
       content: `<@${this.id}> Choose a Token to move:`,
       placeholder: "Choose a Token",
       choices: choiceObj,
