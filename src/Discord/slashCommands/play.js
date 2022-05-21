@@ -47,7 +47,7 @@ export const command = {
       UserActions = await confirm({
         channel: interaction.channel,
         to: players.map(p => p.id),
-        content: `<@${interaction.user.id}> invited ${players.map(u => `<@${u.id}>`).join(", ")} to play a Ludo Match!\n\nDo you want to play?`,
+        content: `<@${interaction.user.id}> invited ${players.map(u => `<@${u.id}>`).join(", ")} to play a Ludo Match!\n\n*Do you want to play?*`,
       });
     }
 

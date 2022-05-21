@@ -25,7 +25,7 @@ export const confirm = async ({
           .setStyle("DANGER"),
       );
     let sent;
-    if (interaction) sent = await interaction.reply({ content, embeds, components: [options], ephemeral: ephemeral });
+    if (interaction) sent = await interaction.reply({ content, embeds, components: [options], ephemeral: ephemeral, fetchReply: true });
     else sent = await channel.send({ content, embeds, components: [options], ephemeral: ephemeral });
     const filter = (i) => to.includes(i.user.id) && i.isButton();
     const collector = sent.createMessageComponentCollector({ filter, time: timeout });
