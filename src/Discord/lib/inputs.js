@@ -52,7 +52,7 @@ export const confirm = async ({
       if (reason == "user" || reason == "time") {
         if (reason == "time") {
           let usersThatDidntRespond = to.filter(u => !results[u]);
-          sent.reply(`Declining to play on behalf of ${usersThatDidntRespond.map(u => `<@${u}>`).join(", ")}`)
+          channel.send(`Declining to play on behalf of ${usersThatDidntRespond.map(u => `<@${u}>`).join(", ")}`)
             .then(m => m.delete({ timeout: 5000 }));
           usersThatDidntRespond.forEach(u => results[u] = false);
           resolve(results);
