@@ -83,7 +83,7 @@ export const prompt = async ({
     const options = new MessageActionRow()
       .addComponents(selction);
     let sent;
-    if (interaction) sent = await interaction.reply({ content: content, embeds, components: [options], ephemeral: ephemeral });
+    if (interaction) sent = await interaction.reply({ content: content, embeds, components: [options], ephemeral: ephemeral, fetchReply: true });
     else sent = await channel.send({ content: content, embeds, components: [options], ephemeral: ephemeral });
 
     const filter = (i) => to.includes(i.user.id) && i.isSelectMenu();
