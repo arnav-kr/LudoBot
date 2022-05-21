@@ -36,6 +36,7 @@ export const command = {
     if (players.length == 2) return interaction.reply({ content: "Only 2 or 4 players can play at a time (including you)", ephemeral: true });
     if (players.some(i => i.id == interaction.user.id)) return interaction.reply({ content: "You can't invite yourself!", ephemeral: true });
     if (players.some(u => (u.bot && u.id != interaction.client.user.id))) return interaction.reply({ content: "You can't invite Discord Bots for a game!", ephemeral: true });
+    if (Array.from(new Set(players.map(p => p.id))).length !== players.length) return interaction.reply({ content: "You can't invite a User multiple times!", ephemeral: true });
     if (players.some(u => u.id == interaction.client.user.id)) players = players.filter(u => u.id != interaction.client.user.id);
 
     await interaction.reply({ content: `Getting Things Ready For You...`, fetchReply: true, ephemeral: true });
@@ -50,7 +51,7 @@ export const command = {
 
     players.unshift(interaction.user);
 
-    UserActions.length > 0 && Object.entries(UserActions).forEach(([id, play]) => {
+    Object.keys(UserActions).length > 0 && Object.entries(UserActions).forEach(([id, play]) => {
       if (!play) {
         players = players.filter(p => p.id != id);
       }
