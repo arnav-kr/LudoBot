@@ -153,15 +153,14 @@ export const command = {
     collector.on('collect', async function (interaction) {
       switch (interaction.customId) {
         case "roll":
-          let num;
           let cp = game.currentPlayer;
           if (interaction.user.id != game.players[cp].id) return interaction.reply({ content: "Its Not Your Turn!", ephemeral: true });
           await game.play(interaction);
           let components = interaction.message.components;
           components[0].components[1].setLabel(cp.toUpperCase() + ": " + game.players[cp].currentNumber);
           snapshot = await game.getSnapshot();
-
-          await interaction.update({ content: `<@${game.players[game.currentPlayer].id}>(\\${clrEmojis[game.currentPlayer]})'s Turn!`, files: [snapshot], components });
+          await interaction.delete();
+          await interaction.channel.send({ content: `<@${game.players[game.currentPlayer].id}>(\\${clrEmojis[game.currentPlayer]})'s Turn!`, files: [snapshot], components });
           break;
         case "leave":
           let leave = await confirm({
