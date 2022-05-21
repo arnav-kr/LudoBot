@@ -118,75 +118,73 @@ export const command = {
       channel: interaction.channel,
     });
 
-    const buttons = new MessageActionRow()
-      .addComponents(
-        new MessageButton()
-          .setCustomId("roll")
-          .setLabel("Roll")
-          .setStyle("PRIMARY"),
+    function gameLoop(count) {
 
-        new MessageButton()
-          .setCustomId("currentNumber")
-          .setLabel("0")
-          .setStyle("SECONDARY")
-          .setDisabled(true),
+      const buttons = new MessageActionRow()
+        .addComponents(
+          new MessageButton()
+            .setCustomId("roll")
+            .setLabel("Roll")
+            .setStyle("PRIMARY"),
 
-        new MessageButton()
-          .setCustomId("leave")
-          .setLabel("Leave")
-          .setStyle("DANGER"),
-      );
+          new MessageButton()
+            .setCustomId("currentNumber")
+            .setLabel(count.toString())
+            .setStyle("SECONDARY")
+            .setDisabled(true),
 
-    let snapshot = await game.getSnapshot();
-    let gameMsg = await interaction.channel.send({
-      content: `<@${Object.values(game.players).filter(p => p.color == game.currentPlayer)[0].id}>(\\${clrEmojis[game.currentPlayer]})'s Turn!`,
-      files: [snapshot],
-      components: [buttons],
-    });
-    game.message = gameMsg;
-    game.interaction = interaction;
+          new MessageButton()
+            .setCustomId("leave")
+            .setLabel("Leave")
+            .setStyle("DANGER"),
+        );
 
-    const filter = (i) => players.map(p => p.id).includes(i.user.id) && i.isButton();
-    const collector = gameMsg.createMessageComponentCollector({ filter, time: 90 * 60 * 1000 });
+      let snapshot = await game.getSnapshot();
+      let gameMsg = await interaction.channel.send({
+        content: `<@${Object.values(game.players).filter(p => p.color == game.currentPlayer)[0].id}>(\\${clrEmojis[game.currentPlayer]})'s Turn!`,
+        files: [snapshot],
+        components: [buttons],
+      });
+      game.message = gameMsg;
+      game.interaction = interaction;
 
-    collector.on('collect', async function (interaction) {
-      switch (interaction.customId) {
-        case "roll":
-          let cp = game.currentPlayer;
-          if (interaction.user.id != game.players[cp].id) return interaction.reply({ content: "Its Not Your Turn!", ephemeral: true });
-          await game.play(interaction);
-          let components = interaction.message.components;
-          components[0].components[1].setLabel(cp.toUpperCase() + ": " + game.players[cp].currentNumber);
-          snapshot = await game.getSnapshot();
-          await gameMsg.delete();
-          gameMsg = await interaction.channel.send({ content: `<@${game.players[game.currentPlayer].id}>(\\${clrEmojis[game.currentPlayer]})'s Turn!`, files: [snapshot], components });
-          game.message = gameMsg;
-          break;
-        case "leave":
-          let leave = await confirm({
-            interaction: interaction,
-            channel: interaction.channel,
-            to: [interaction.user.id],
-            content: `<@${interaction.user.id}> Are you sure you want to leave?`,
-          })
-          leave = leave[interaction.user.id];
-          if (leave) {
-            Object.values(game.players).filter(u => u.id == interaction.user.id)[0].leave()
-            interaction.channel.send(`<@${interaction.user.id}> shamelessly left the game!`)
-          }
-          break;
-      }
-    });
-    collector.on('end', async function (_collected, reason) {
-      if (reason == "user" || reason == "time") {
-        if (reason == "time") {
-          Game.skip();
+      const filter = (i) => players.map(p => p.id).includes(i.user.id) && i.isButton();
+      const collector = gameMsg.createMessageComponentCollector({ filter, time: 90 * 60 * 1000 });
+
+      collector.on('collect', async function (interaction) {
+        switch (interaction.customId) {
+          case "roll":
+            let cp = game.currentPlayer;
+            if (interaction.user.id != game.players[cp].id) return interaction.reply({ content: "Its Not Your Turn!", ephemeral: true });
+            await game.play(interaction);
+            gameLoop(cp.toUpperCase() + ": " + game.players[cp].currentNumber)
+            await gameMsg.delete();
+            break;
+          case "leave":
+            let leave = await confirm({
+              interaction: interaction,
+              channel: interaction.channel,
+              to: [interaction.user.id],
+              content: `<@${interaction.user.id}> Are you sure you want to leave?`,
+            })
+            leave = leave[interaction.user.id];
+            if (leave) {
+              Object.values(game.players).filter(u => u.id == interaction.user.id)[0].leave()
+              interaction.channel.send(`<@${interaction.user.id}> shamelessly left the game!`)
+            }
+            break;
         }
-      } else {
-        console.error(reason);
-      }
-    });
-
-    // await interaction.channel.send(`The Players Who Want To Play Now: ${players.map(p => `<@${p.id}>`).join(", ")}`);
+      });
+      collector.on('end', async function (_collected, reason) {
+        if (reason == "user" || reason == "time") {
+          if (reason == "time") {
+            Game.skip();
+          }
+        } else {
+          console.error(reason);
+        }
+      });
+    }
+    gameLoop(0);
   }
 }
