@@ -159,7 +159,7 @@ export const command = {
           let components = interaction.message.components;
           components[0].components[1].setLabel(cp.toUpperCase() + ": " + game.players[cp].currentNumber);
           snapshot = await game.getSnapshot();
-          await interaction.delete();
+          await interaction.deleteReply();
           await interaction.channel.send({ content: `<@${game.players[game.currentPlayer].id}>(\\${clrEmojis[game.currentPlayer]})'s Turn!`, files: [snapshot], components });
           break;
         case "leave":
