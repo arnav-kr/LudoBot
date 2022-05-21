@@ -50,12 +50,14 @@ export const command = {
     }
 
     players.unshift(interaction.user);
-
-    Object.keys(UserActions).length > 0 && Object.entries(UserActions).forEach(([id, play]) => {
+    Object.entries(UserActions).forEach(([id, play]) => {
       if (!play) {
         players = players.filter(p => p.id != id);
       }
     });
+
+    if (players.length == 0) return interaction.reply({ content: "You can't Play Alone!", ephemeral: true });
+    if (players.length == 2) return interaction.reply({ content: "Only 2 or 4 players can play at a time (including you)", ephemeral: true });
 
     let playerData = [];
     players.forEach(player => {
