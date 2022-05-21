@@ -29,6 +29,7 @@ export class Player {
   leave() {
     this.left = true;
     this.game.playerData.filter(p => p.id != this.id);
+    this.game.leftUsers.push(this.id);
     this.nameObj.name = this.nameObj.name.length > 11 ? this.nameObj.name.substr(0, 11) + "...(left)" : this.nameObj.name + "(left)";
   }
   async prompt(choices, interaction) {

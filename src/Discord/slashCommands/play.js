@@ -157,8 +157,17 @@ export const command = {
             let cp = game.currentPlayer;
             if (interaction.user.id != game.players[cp].id) return interaction.reply({ content: "Its Not Your Turn!", ephemeral: true });
             await game.play(interaction);
-            await gameLoop(cp.toUpperCase() + ": " + game.players[cp].currentNumber)
             await gameMsg.delete();
+            if (game.players.length - game.leftUsers.length <= 1) {
+              collector.stop();
+              return interaction.channel.send(`Everyone Left! So, Ending the Game.`);
+            }
+            if (!game.winner) {
+              await gameLoop(cp.toUpperCase() + ": " + game.players[cp].currentNumber);
+            }
+            else {
+              interaction.channel.send(`${game.players[game.winner]} won the Game! 🎉`);
+            }
             break;
           case "leave":
             let leave = await confirm({

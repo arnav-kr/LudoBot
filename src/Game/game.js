@@ -27,6 +27,7 @@ export class Game {
     this.gameMap = [...Array(15)].map(i => [...Array(15)].map(() => []));
     this.counters = { red: [], blue: [], green: [], yellow: [] };
     this.currentPlayerIndex = 0;
+    this.leftUsers = [];
     this.events = {
       playerChange: () => { },
     }
