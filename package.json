@@ -1,0 +1,31 @@
+{
+  "name": "ludo",
+  "version": "1.0.0",
+  "description": "A LUDO Bot for Discord.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "imports": {
+    "#discord/*": "./src/Discord/*.js",
+    "#discord/lib/*": "./src/Discord/lib*.js",
+    "#game/objects/*": "./src/Game/Objects/*.js",
+    "#game/lib/*": "./src/Game/lib/*.js"
+  },
+  "keywords": [
+    "ludo",
+    "discord",
+    "bot",
+    "ludo bot",
+    "discord bot"
+  ],
+  "author": "arnav-kr (https://github.com/arnav-kr) <hi@thearnav.dev>",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^13.7.0",
+    "dotenv": "^16.0.1",
+    "skia-canvas": "^0.9.29"
+  }
+}
