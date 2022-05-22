@@ -65,7 +65,7 @@ export const command = {
 
     Object.entries(UserActions).forEach(([id, play]) => {
       if (!play) {
-        members.filter(m => m.id = id)[0].isEngazed = false;
+        members.filter(m => m.id == id)[0].isEngazed = false;
         players = players.filter(p => p.id != id);
       }
     });
