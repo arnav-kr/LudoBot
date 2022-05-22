@@ -38,7 +38,7 @@ export const command = {
     if (players.some(u => u.bot)) return interaction.reply({ content: "You can't invite Discord Bots for a game!", ephemeral: true });
     if (Array.from(new Set(players.map(p => p.id))).length !== players.length) return interaction.reply({ content: "You can't invite a User multiple times!", ephemeral: true });
 
-    let members = players.map(async (p) => await (interaction.guild.members.cache.get(p.id) || interaction.guild.members.cache.get(p.id)));
+    let members = await Promise.all(players.map(async (p) => await interaction.guild.members.cache.get(p.id) || await interaction.guild.members.cache.get(p.id)));
     members.push(interaction.member);
 
     if (members.some(m => m.isEngazed == true)) {
@@ -69,7 +69,6 @@ export const command = {
         players = players.filter(p => p.id != id);
       }
     });
-    console.log(players)
 
     if (players.length == 1) return interaction.channel.send({ content: "You can't Play Alone!", ephemeral: true });
     if (players.length == 3) return interaction.channel.send({ content: "Only 2 or 4 players can play at a time (including you)", ephemeral: true });
@@ -162,7 +161,7 @@ export const command = {
       game.interaction = interaction;
 
       const filter = (i) => players.map(p => p.id).includes(i.user.id) && i.isButton();
-      const collector = gameMsg.createMessageComponentCollector({ filter, time: 90 * 60 * 1000 });
+      const collector = gameMsg.createMessageComponentCollector({ filter, time: 20000 });
 
       collector.on('collect', async function (interaction) {
         switch (interaction.customId) {
@@ -170,12 +169,13 @@ export const command = {
             let cp = game.currentPlayer;
             if (interaction.user.id != game.players[cp].id) return interaction.reply({ content: "Its Not Your Turn!", ephemeral: true });
             await game.play(interaction);
-            await gameMsg.delete();
             if (!game.winner) {
+              await gameMsg.delete();
               await gameLoop(cp.toUpperCase() + ": " + game.players[cp].currentNumber);
             }
             else {
-              interaction.channel.send(`${game.players[game.winner]} won the Game! 🎉`);
+              await gameMsg.edit({ content: "Game Ended!", components: [] });
+              interaction.channel.send(`<@${game.players[game.winner].id}> won the Game! 🎉`);
             }
             break;
           case "leave":
@@ -183,19 +183,23 @@ export const command = {
               interaction: interaction,
               channel: interaction.channel,
               to: [interaction.user.id],
-              content: `<@${interaction.user.id}> Are you sure you want to leave?`,
+              content: `<@${interaction.user.id}> Are you sure you want to leave ? `,
             })
             leave = leave[interaction.user.id];
             if (leave) {
-              Object.values(game.players).filter(u => u.id == interaction.user.id)[0].leave()
+              Object.values(game.players).filter(u => u.id == interaction.user.id)[0].leave();
               await interaction.channel.send(`<@${interaction.user.id}> shamelessly left the game!`);
               members.filter(m => m.id == interaction.user.id)[0].isEngazed = false;
             }
             if (Object.keys(game.players).length - game.leftUsers.length <= 1) {
               collector.stop();
-              await gameMsg.delete();
+              await gameMsg.edit({ content: "Game Ended!", components: [] });
               members.forEach(member => member.isEngazed = false);
-              return interaction.channel.send(`Everyone Left! So, Ending the Game.`);
+              if (Object.keys(game.players).length - game.leftUsers.length == 0) {
+                return interaction.channel.send(`Everyone Left! So, Ending the Game.`);
+              }
+              game.winner = game.playerData[0].color;
+              interaction.channel.send(`<@${game.players[game.winner].id}> won the Game! 🎉`);
             }
             break;
         }
@@ -203,7 +207,20 @@ export const command = {
       collector.on('end', async function (_collected, reason) {
         if (reason == "user" || reason == "time") {
           if (reason == "time") {
-            Game.skip();
+            let cp = game.currentPlayer;
+            game.skip();
+            if (game.players[cp].skippedChances >= 5) {
+              game.players[cp].leave();
+              await interaction.channel.send(`<@${game.players[cp].id}> has been kicked out of the game because he skipped 5 chances!`);
+              if (Object.keys(game.players).length - game.leftUsers.length == 1) {
+                await gameMsg.edit({ content: "Game Ended!", components: [] });
+                members.forEach(member => member.isEngazed = false);
+                game.winner = game.playerData[0].color;
+                return interaction.channel.send(`<@${game.players[game.winner].id}> won the Game! 🎉`);
+              }
+            }
+            await gameMsg.delete();
+            await gameLoop(cp.toUpperCase() + ": SKIPPED");
           }
         } else {
           console.error(reason);

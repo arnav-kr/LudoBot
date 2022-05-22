@@ -95,6 +95,7 @@ export class Game {
     return magnitude;
   }
   skip() {
+    this.players[this.currentPlayer].skippedChances += 1;
     this.currentPlayerIndex += 1;
     if (this.currentPlayerIndex >= this.playerData.length) this.currentPlayerIndex = 0;
     this.currentPlayer = this.playerData[this.currentPlayerIndex].color;

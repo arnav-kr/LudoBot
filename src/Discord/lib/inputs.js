@@ -27,7 +27,15 @@ export const confirm = async ({
     let sent;
     if (interaction) sent = await interaction.reply({ content, embeds, components: [options], ephemeral: ephemeral, fetchReply: true });
     else sent = await channel.send({ content, embeds, components: [options], ephemeral: ephemeral });
-    const filter = (i) => to.includes(i.user.id) && i.isButton();
+    const filter = (i) => {
+      if (to.includes(i.user.id) && i.isButton()) {
+        return true;
+      }
+      else {
+        i.reply({ content: "This is Not For You!", ephemeral: true });
+        return false;
+      }
+    }
     const collector = sent.createMessageComponentCollector({ filter, time: timeout });
 
     collector.on('collect', async function (interaction) {
@@ -53,7 +61,6 @@ export const confirm = async ({
         if (reason == "time") {
           let usersThatDidntRespond = to.filter(u => !results[u]);
           channel.send(`Declining to play on behalf of ${usersThatDidntRespond.map(u => `<@${u}>`).join(", ")}`)
-            .then(m => m.delete({ timeout: 5000 }));
           usersThatDidntRespond.forEach(u => results[u] = false);
           resolve(results);
         }
@@ -90,7 +97,15 @@ export const prompt = async ({
     if (interaction) sent = await interaction.reply({ content: content, embeds, components: [options], ephemeral: ephemeral, fetchReply: true });
     else sent = await channel.send({ content: content, embeds, components: [options], ephemeral: ephemeral });
 
-    const filter = (i) => to.includes(i.user.id) && i.isSelectMenu();
+    const filter = (i) => {
+      if (to.includes(i.user.id) && i.isSelectMenu()) {
+        return true;
+      }
+      else {
+        i.reply({ content: "This is Not For You!", ephemeral: true });
+        return false;
+      }
+    }
     const collector = sent.createMessageComponentCollector({ filter, time: timeout });
 
     collector.on('collect', async function (interaction) {
