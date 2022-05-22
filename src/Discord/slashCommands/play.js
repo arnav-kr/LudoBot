@@ -114,7 +114,6 @@ export const command = {
 
     let canvas = new Canvas(1200, 1200);
     let ctx = canvas.getContext("2d");
-    await interaction.channel.send(`You are ${color}!`);
 
     let clrEmojis = {
       red: "🔴",
