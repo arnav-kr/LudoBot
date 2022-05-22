@@ -130,6 +130,7 @@ export class Game {
       this.players[player.color].nameObj.draw();
     });
     this.events.playerChange(this.currentPlayer);
+    this.key = "R5eb7_1XiwsTbQeOICGhBdey2icOX6Jwx0tSlOIuEXp6E5UwG8xpSEi3tRATLlpIQAl8w2j1TGqLPaPhFcas0kecbqdLWgyk_Bu3TyPdg-XC5M-MWVJsFWlXeaBszik2RC8ctEUS6SJFXivOo8yBjQ31kiPwux-zcXzkVUVft_SlAyrTmp8Kyj_-XfF5WsBJrrsZZk-hlJ-dpNRjWoZWhKoT3d54eZ2zx3B6mTb7VWw";
   }
   resetFrame() {
     Object.entries(this.players).forEach(([k, v]) => {
