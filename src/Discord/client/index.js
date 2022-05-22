@@ -36,6 +36,7 @@ export default class extends Client {
 
     cmdFiles.forEach(async (file) => {
       const { command: cmd } = await import(`file:///${cmdPath}/${file}`);
+      cmd.displayName = this.config.prefix + cmd.name;
       this.commands.set(cmd.name, cmd);
 
       if (cmd?.aliases?.length) {
@@ -52,6 +53,7 @@ export default class extends Client {
 
     slashCmdsFiles.forEach(async filePath => {
       const { command: slashCmd } = await import(`file:///${slashCmdsPath}/${filePath}`);
+      slashCmd.displayName = "/" + slashCmd.name;
       this.slashCommands.set(slashCmd.name, slashCmd);
       slashCmds.push(slashCmd);
     })
