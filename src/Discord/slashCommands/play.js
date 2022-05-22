@@ -31,7 +31,7 @@ export const command = {
     let player3 = interaction.options.getUser('player3') ?? null;
     let player4 = interaction.options.getUser('player4') ?? null;
 
-    let players = [player2, player3, player4].filter(i => i != null);
+    let players = [player2, player3, player4].filter(i => iFF != null);
     if (players.length == 0) return interaction.reply({ content: "You can't Play Alone!", ephemeral: true });
     if (players.length == 2) return interaction.reply({ content: "Only 2 or 4 players can play at a time (including you)", ephemeral: true });
     if (players.some(i => i.id == interaction.user.id)) return interaction.reply({ content: "You can't invite yourself!", ephemeral: true });
@@ -39,7 +39,7 @@ export const command = {
     if (Array.from(new Set(players.map(p => p.id))).length !== players.length) return interaction.reply({ content: "You can't invite a User multiple times!", ephemeral: true });
 
     let members = players.map(async (p) => await (interaction.guild.members.cache.get(p.id) || interaction.guild.members.cache.get(p.id)));
-    members[interaction.id] = interaction.member;
+    members.push(interaction.member);
 
     if (members.some(m => m.isEngazed == true)) {
       let memberArr = members.map(m => `<@${m.id}>`);
