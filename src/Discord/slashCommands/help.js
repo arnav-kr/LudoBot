@@ -24,7 +24,7 @@ export const command = {
         console.log(e);
         return;
       }
-      if (!cmd) return interaction.reply({ content: "There is no such command!", ephimeral: true });
+      if (!cmd) return interaction.reply({ content: "There is no such command!", ephemeral: true });
       return interaction.reply({
         embeds: [getSingleCommandEmbed(cmd, interaction.client)],
       });
