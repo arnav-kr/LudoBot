@@ -55,6 +55,9 @@ export const command = {
     members.forEach(m => m.isEngazed = true);
     if (players.length > 0) {
       UserActions = await confirm({
+        onTimeout: () => {
+          members.forEach(member => member.isEngazed = false);
+        },
         channel: interaction.channel,
         to: players.map(p => p.id),
         content: `<@${interaction.user.id}> invited ${players.map(u => `<@${u.id}>`).join(", ")} to play a Ludo Match!\n\n*Do you want to play?*`,

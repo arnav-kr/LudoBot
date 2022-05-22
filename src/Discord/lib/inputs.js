@@ -9,6 +9,7 @@ export const confirm = async ({
   labels: [yes, no] = ["Yes", "No"],
   timeout = 20000,
   ephemeral = false,
+  onTimeout = () => { },
 }) => {
   let results = {};
   return new Promise(async (resolve, reject) => {
@@ -62,6 +63,7 @@ export const confirm = async ({
           let usersThatDidntRespond = to.filter(u => !results[u]);
           channel.send(`Declining to play on behalf of ${usersThatDidntRespond.map(u => `<@${u}>`).join(", ")}`)
           usersThatDidntRespond.forEach(u => results[u] = false);
+          onTimeout(interaction);
           resolve(results);
         }
       } else {
@@ -83,6 +85,7 @@ export const prompt = async ({
   choices,
   timeout = 20000,
   ephemeral = false,
+  onTimeout = () => { },
 }) => {
   return new Promise(async (resolve, reject) => {
     if (!defaultValue) defaultValue = choices[0].value;
@@ -121,6 +124,7 @@ export const prompt = async ({
     collector.on('end', async function (_collected, reason) {
       if (reason == "user" || reason == "time") {
         if (reason == "time") {
+          onTimeout(interaction);
           resolve(defaultValue);
           sent.delete();
         }
