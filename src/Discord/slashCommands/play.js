@@ -38,7 +38,7 @@ export const command = {
     if (players.some(u => u.bot)) return interaction.reply({ content: "You can't invite Discord Bots for a game!", ephemeral: true });
     if (Array.from(new Set(players.map(p => p.id))).length !== players.length) return interaction.reply({ content: "You can't invite a User multiple times!", ephemeral: true });
 
-    let members = players.map(async (p) => await (guild.members.cache.get(p.id) || guild.members.cache.get(p.id)));
+    let members = players.map(async (p) => await (interaction.guild.members.cache.get(p.id) || interaction.guild.members.cache.get(p.id)));
     members[interaction.id] = interaction.member;
 
     if (members.some(m => m.isEngazed == true)) {
