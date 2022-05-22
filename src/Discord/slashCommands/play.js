@@ -156,7 +156,7 @@ export const command = {
 
       let snapshot = await game.getSnapshot();
       let gameMsg = await interaction.channel.send({
-        content: `<@${Object.values(game.players).filter(p => p.color == game.currentPlayer)[0].id}>(\\${clrEmojis[game.currentPlayer]})'s Turn!`,
+        content: `<@${Object.values(game.players).filter(p => p.color == game.currentPlayer)[0].id}>(${clrEmojis[game.currentPlayer]})'s Turn!`,
         files: [snapshot],
         components: [buttons],
       });
