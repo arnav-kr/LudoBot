@@ -43,7 +43,7 @@ export const command = {
 
     if (members.some(m => m.isEngazed == true)) {
       let memberArr = members.map(m => `<@${m.id}>`);
-      interaction.reply(`${memberArr.length > 1 ? memberArr.join(", ") + "are " : memberArr.join(", ") + "is "} busy in their own works. Please Invite someone else.`)
+      interaction.reply(`${memberArr.length > 1 ? memberArr.join(", ") + " are " : memberArr.join(", ") + "is "} busy in their own works. Please Invite someone else.`)
     }
 
 
