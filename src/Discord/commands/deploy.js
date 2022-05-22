@@ -17,7 +17,7 @@ export const command = {
       else sent.edit({ content: 'Failed to deploy global commands.', embeds: [] });
     }
     else {
-      const commands = [];
+      let commands = [];
       if (arg == "*" || arg.toLowerCase() == "all" || arg == "null") {
         msg.client.slashCommands.forEach(c => {
           commands.push(c);
