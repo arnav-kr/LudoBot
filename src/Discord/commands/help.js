@@ -49,7 +49,7 @@ function getCommandsEmbed(client) {
   let description = ``;
   let commands = new Map([...client.slashCommands, ...client.commands]);
   commands.forEach(function (command) {
-    description += `**${command.name}**: ${command?.description}\n`;
+    description += `**${command.displayName}**: ${command?.description}\n`;
   });
 
   const cmdEmbed = new MessageEmbed()
