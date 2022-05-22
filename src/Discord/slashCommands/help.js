@@ -55,7 +55,7 @@ function getSingleCommandEmbed(command, client) {
 
 function getCommandsEmbed(client) {
   let description = ``;
-  let commands = new Map([...client.slashCommands, ...client.commands]);
+  let commands = new Map([...client.commands, ...client.slashCommands]);
   commands.forEach(function (command) {
     description += `**${command.displayName}**: ${command?.description}\n`;
   });
