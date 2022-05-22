@@ -10,7 +10,7 @@ export const command = {
       let arg = args[0];
       let cmd;
       try {
-        cmd = msg.client.commands.get(arg) || msg.client?.commands?.get(msg.client?.aliases?.get(arg)?.name) || interaction.client.slashCommands.get(arg);;
+        cmd = msg.client.commands.get(arg) || msg.client?.commands?.get(msg.client?.aliases?.get(arg)?.name) || msg.client.slashCommands.get(arg);;
       }
       catch (e) {
         console.log(e);
