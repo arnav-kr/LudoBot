@@ -49,7 +49,7 @@ export class Player {
 
     let res = await this.game.prompt({
       interaction: interaction,
-      content: `<@${this.id}>, Choose a Token to move:`,
+      content: `<@${this.id}>, You got **${this.currentNumber}** Choose a Token to move:`,
       placeholder: "Choose a Token",
       choices: choiceObj,
       to: this.id,
