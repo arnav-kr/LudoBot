@@ -51,6 +51,7 @@ export class Game {
     this.setup();
   }
   async play(interaction = undefined) {
+    if (Object.keys(this.players).length <= 1) return;
     let player = this.players[this.currentPlayer];
     let magnitude = player.roll();
     let choices = [];
@@ -95,6 +96,7 @@ export class Game {
     return magnitude;
   }
   skip() {
+    if (Object.keys(this.players).length <= 1) return;
     this.players[this.currentPlayer].skippedChances += 1;
     this.currentPlayerIndex += 1;
     if (this.currentPlayerIndex >= this.playerData.length) this.currentPlayerIndex = 0;
