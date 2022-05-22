@@ -13,25 +13,25 @@ export const command = {
       required: false,
     }
   ],
-  async run({ msg }) {
+  async run({ interaction }) {
     let arg = interaction.options.getString("command");
     if (arg) {
       let cmd;
       try {
-        cmd = msg.client.commands.get(arg) || msg.client?.commands?.get(msg.client?.aliases?.get(arg)?.name);
+        cmd = interaction.client.commands.get(arg) || interaction.client?.commands?.get(interaction.client?.aliases?.get(arg)?.name);
       }
       catch (e) {
         console.log(e);
         return;
       }
       if (!cmd) return;
-      return msg.reply({
-        embeds: [getSingleCommandEmbed(cmd, msg.client)],
+      return interaction.reply({
+        embeds: [getSingleCommandEmbed(cmd, interaction.client)],
       });
     }
 
-    let embed = getCommandsEmbed(msg.client);
-    msg.reply({
+    let embed = getCommandsEmbed(interaction.client);
+    interaction.reply({
       embeds: [embed],
     });
   }
