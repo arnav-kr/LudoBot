@@ -18,7 +18,7 @@ export const command = {
     }
     else {
       const commands = [];
-      if (arg = "*" || arg.toLowerCase() == "all" || arg == "null") {
+      if (arg == "*" || arg.toLowerCase() == "all" || arg == "null") {
         msg.client.slashCommands.forEach(c => {
           commands.push(c);
         });
