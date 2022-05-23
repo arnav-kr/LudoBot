@@ -25,7 +25,9 @@
   "license": "MIT",
   "dependencies": {
     "discord.js": "^13.7.0",
-    "dotenv": "^16.0.1",
     "skia-canvas": "^0.9.29"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.1"
   }
 }

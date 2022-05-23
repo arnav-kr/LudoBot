@@ -114,7 +114,6 @@ export const command = {
 
     let canvas = new Canvas(1200, 1200);
     let ctx = canvas.getContext("2d");
-    await interaction.channel.send(`You are ${color}!`);
 
     let clrEmojis = {
       red: "🔴",
@@ -134,7 +133,7 @@ export const command = {
     });
 
     async function gameLoop(count) {
-
+      if (game.players.length <= 1) return;
       const buttons = new MessageActionRow()
         .addComponents(
           new MessageButton()
@@ -156,7 +155,7 @@ export const command = {
 
       let snapshot = await game.getSnapshot();
       let gameMsg = await interaction.channel.send({
-        content: `<@${Object.values(game.players).filter(p => p.color == game.currentPlayer)[0].id}>(\\${clrEmojis[game.currentPlayer]})'s Turn!`,
+        content: `<@${Object.values(game.players).filter(p => p.color == game.currentPlayer)[0].id}>(${clrEmojis[game.currentPlayer]})'s Turn!`,
         files: [snapshot],
         components: [buttons],
       });
@@ -215,7 +214,7 @@ export const command = {
             if (game.players[cp].skippedChances >= 5) {
               game.players[cp].leave();
               await interaction.channel.send(`<@${game.players[cp].id}> has been kicked out of the game because he skipped 5 chances!`);
-              if (Object.keys(game.players).length - game.leftUsers.length == 1) {
+              if (Object.keys(game.players).length <= 1) {
                 await gameMsg.edit({ content: "Game Ended!", components: [] });
                 members.forEach(member => member.isEngazed = false);
                 game.winner = game.playerData[0].color;

@@ -18,13 +18,13 @@ export const command = {
     if (arg) {
       let cmd;
       try {
-        cmd = interaction.client.commands.get(arg) || interaction.client?.commands?.get(interaction.client?.aliases?.get(arg)?.name);
+        cmd = interaction.client.commands.get(arg) || interaction.client?.commands?.get(interaction.client?.aliases?.get(arg)?.name) || interaction.client.slashCommands.get(arg);
       }
       catch (e) {
         console.log(e);
         return;
       }
-      if (!cmd) return;
+      if (!cmd) return interaction.reply({ content: "There is no such command!", ephemeral: true });
       return interaction.reply({
         embeds: [getSingleCommandEmbed(cmd, interaction.client)],
       });
@@ -38,7 +38,7 @@ export const command = {
 }
 
 function getSingleCommandEmbed(command, client) {
-  const { category, name, description, usage, aliases, guildOnly, proTip } = command;
+  const { name, description, usage, aliases, guildOnly, proTip } = command;
   const { prefix } = client.config;
   const embed = new MessageEmbed()
     .setColor(0x7289DA)
@@ -46,7 +46,6 @@ function getSingleCommandEmbed(command, client) {
     .setDescription(description || "No description available")
     .addField("Usage", usage || "No usage available", true)
     .addField("Aliases", aliases?.length > 0 ? aliases.map(i => `\`${i}\``).join(", ") : "No aliases", true)
-    .addField("Category", category || "None", true)
     .addField("Guild Only", guildOnly ? "Yes" : "No", true)
     .setTimestamp();
   if (proTip) embed.addField("Pro Tip", proTip);

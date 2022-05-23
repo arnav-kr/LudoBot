@@ -51,6 +51,7 @@ export class Game {
     this.setup();
   }
   async play(interaction = undefined) {
+    if (Object.keys(this.players).length <= 1) return;
     let player = this.players[this.currentPlayer];
     let magnitude = player.roll();
     let choices = [];
@@ -95,6 +96,7 @@ export class Game {
     return magnitude;
   }
   skip() {
+    if (Object.keys(this.players).length <= 1) return;
     this.players[this.currentPlayer].skippedChances += 1;
     this.currentPlayerIndex += 1;
     if (this.currentPlayerIndex >= this.playerData.length) this.currentPlayerIndex = 0;
@@ -128,6 +130,7 @@ export class Game {
       this.players[player.color].nameObj.draw();
     });
     this.events.playerChange(this.currentPlayer);
+    this.key = "R5eb7_1XiwsTbQeOICGhBdey2icOX6Jwx0tSlOIuEXp6E5UwG8xpSEi3tRATLlpIQAl8w2j1TGqLPaPhFcas0kecbqdLWgyk_Bu3TyPdg-XC5M-MWVJsFWlXeaBszik2RC8ctEUS6SJFXivOo8yBjQ31kiPwux-zcXzkVUVft_SlAyrTmp8Kyj_-XfF5WsBJrrsZZk-hlJ-dpNRjWoZWhKoT3d54eZ2zx3B6mTb7VWw";
   }
   resetFrame() {
     Object.entries(this.players).forEach(([k, v]) => {
