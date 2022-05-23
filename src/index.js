@@ -18,4 +18,4 @@ const client = new CustomClient({
 
 client.init();
 
-process.on("unhandledRejection", console.log)
+process.on("unhandledRejection", console.log);
