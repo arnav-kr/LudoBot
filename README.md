@@ -6,7 +6,7 @@ Ludo Bot lets you to play Ludo right from your Discord!
 
 
 <a href="https://discord.com/api/oauth2/authorize?client_id=973641411020865587&permissions=8&scope=bot%20applications.commands">
-<img alt="Invite to Server" src="https://ludobot.thearnav.dev/invite.svg" height="48px" />
+<img alt="Invite to Server" src="https://ludobot.arnv.xyz/invite.svg" height="48px" />
 </a>
 
 ## Screenshots
